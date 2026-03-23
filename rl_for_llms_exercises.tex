@@ -104,7 +104,92 @@ Priority labels: \pA\ deep read · \pAm\ method + experiments · \pBp\ problem +
 \end{description}
 
 \begin{exercise}[PPO clipping]
-\TODO{Derive the PPO clipped surrogate objective; show the gradient vanishes when the ratio exceeds $(1+\epsilon)$.}
+Let $r_t(\theta)=\dfrac{\pi_\theta(a_t\mid s_t)}{\pi_{\theta_{\text{old}}}(a_t\mid s_t)}$ be the probability ratio and $\hat{A}_t$ the estimated advantage.
+\begin{enumerate}[label=(\alph*)]
+  \item Write the PPO clipped surrogate objective
+        \[L^{\text{CLIP}}(\theta)=\mathbb{E}_t\!\left[\min\!\left(r_t(\theta)\hat{A}_t,\;
+        \operatorname{clip}(r_t(\theta),1{-}\varepsilon,1{+}\varepsilon)\hat{A}_t\right)\right].\]
+        Identify the role of each argument of $\min$.
+  \item Prove that when $\hat{A}_t>0$ and $r_t(\theta)>1+\varepsilon$,
+        the gradient $\nabla_\theta L^{\text{CLIP}}(\theta)=\mathbf{0}$ (with respect to the clipped term).
+        (\emph{Hint}: evaluate $\operatorname{clip}(r_t,1-\varepsilon,1+\varepsilon)$ in this region.)
+  \item By an analogous argument, show that when $\hat{A}_t<0$ and $r_t(\theta)<1-\varepsilon$
+        the clipped term's gradient also vanishes.
+  \item For $\varepsilon=0.2$ and a fixed $\hat{A}_t=1$, sketch $L^{\text{CLIP}}$ as a function of
+        $r_t(\theta)$ over $[0.5,\,2.0]$.  Mark the two flat regions and the linear segment.
+  \item Explain intuitively why these flat regions implement a soft trust-region constraint
+        without requiring a second-order optimisation step.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[PPO: TRPO connection and KL penalty]
+The PPO paper (Schulman et al., 2017) presents the clipped objective as a simpler alternative
+to TRPO.  It also proposes a KL-penalty fallback.
+\begin{enumerate}[label=(\alph*)]
+  \item Write the TRPO constrained optimisation problem; identify the step that requires
+        computing (or approximating) the Fisher information matrix, and state its
+        memory complexity for a model with $n$ parameters.
+  \item Write the PPO KL-penalty objective
+        $L^{\text{KL}}(\theta)=\mathbb{E}_t\!\left[r_t(\theta)\hat{A}_t\right]
+        -\beta\,\overline{\mathrm{KL}}\!\left[\pi_{\theta_{\text{old}}},\pi_\theta\right]$
+        (where $\overline{\mathrm{KL}}$ denotes the mean KL divergence over the batch).
+        State which KL direction is used and why.
+  \item Describe the \emph{adaptive} KL coefficient scheme: given a target
+        $d_{\text{targ}}$, what adjustment is made to $\beta$ when the observed KL is
+        (i) greater than $1.5\,d_{\text{targ}}$, and (ii) less than $d_{\text{targ}}/1.5$?
+  \item Give one advantage and one disadvantage of the KL-penalty approach compared
+        to the clipped approach for practical large-scale training.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[Generalised Advantage Estimation in PPO]
+PPO estimates advantages using GAE$(\gamma,\lambda)$ (Schulman et al., 2016).
+\begin{enumerate}[label=(\alph*)]
+  \item Define the one-step TD residual
+        $\delta_t^V = r_t + \gamma V(s_{t+1}) - V(s_t)$
+        and write the GAE estimator as an infinite weighted sum:
+        $\hat{A}_t^{\text{GAE}(\gamma,\lambda)}
+         =\sum_{k=0}^{\infty}(\gamma\lambda)^k \delta_{t+k}^V$.
+  \item Show that $\lambda=0$ recovers the one-step TD advantage
+        $r_t+\gamma V(s_{t+1})-V(s_t)$,
+        and that $\lambda=1$ recovers
+        $\sum_{k=0}^{\infty}\gamma^k r_{t+k} - V(s_t)$
+        (Monte-Carlo return minus baseline).
+  \item Explain the bias-variance trade-off: which endpoint ($\lambda=0$ or $\lambda=1$)
+        has higher variance?  Which has higher bias?  Justify both answers.
+  \item For a two-step trajectory with $\gamma=0.99$, $\lambda=0.95$,
+        $\delta_0^V=1.0$, $\delta_1^V=-0.5$, compute $\hat{A}_0^{\text{GAE}}$
+        to three significant figures.
+        (\emph{Note}: truncate at $k=1$ since the episode ends after step 1.)
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[PPO actor-critic algorithm]
+PPO trains a shared actor-critic network using $K$ epochs of minibatch gradient ascent
+on each batch of $T$ timesteps collected per actor.
+\begin{enumerate}[label=(\alph*)]
+  \item Write the full per-step loss
+        $L^{\text{PPO}}(\theta)
+         = L^{\text{CLIP}}(\theta)
+           - c_1 L^{\text{VF}}(\theta)
+           + c_2 S[\pi_\theta](s_t)$,
+         defining $L^{\text{VF}}$ (the value-function loss) and $S[\pi_\theta]$ (the entropy bonus).
+        Why is the value loss subtracted rather than added?
+  \item Explain why performing $K>1$ gradient steps on the \emph{same} rollout batch
+        is generally invalid under the on-policy policy-gradient theorem, and how
+        the clipping mechanism makes it approximately safe.
+  \item After three minibatch updates the probability ratio for a particular
+        $(s_t,a_t)$ pair has grown to $r_t(\theta)=2.4$.
+        With $\varepsilon=0.2$ and $\hat{A}_t=0.6$:
+        \begin{enumerate}[label=(\roman*)]
+          \item Compute the unclipped surrogate value $r_t(\theta)\hat{A}_t$.
+          \item Compute the clipped surrogate value
+                $\operatorname{clip}(r_t(\theta),1-\varepsilon,1+\varepsilon)\hat{A}_t$.
+          \item Which value does $L^{\text{CLIP}}$ use?  Justify.
+        \end{enumerate}
+  \item State the early-stopping heuristic the paper recommends
+        to prevent the ratio from drifting too far within the $K$ epochs.
+\end{enumerate}
 \end{exercise}
 
 \begin{exercise}[From PPO to GRPO]
