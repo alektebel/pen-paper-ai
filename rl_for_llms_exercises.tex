@@ -1,0 +1,555 @@
+%% RL for LLMs: Pen-and-Paper Exercises
+%% Papers listed from: https://algoroxyolo.github.io/blog/2026/rl-reading-list/
+%% 96 papers · 5 categories · 24 sub-topics
+%% TODO markers indicate exercises that still need to be written.
+
+\documentclass[11pt,a4paper]{book}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\geometry{margin=2.5cm}
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=teal}
+
+% ── priority labels ────────────────────────────────────────────────────────────
+\newcommand{\pA}{\textbf{[A]}}     % deep read
+\newcommand{\pAm}{\textbf{[A-]}}   % method + experiments
+\newcommand{\pBp}{\textbf{[B+]}}   % problem + conclusion
+\newcommand{\pB}{\textbf{[B]}}     % skim
+\newcommand{\pC}{\textbf{[C]}}     % core idea only
+\newcommand{\NV}{\textcolor{teal}{\textsc{nv}}}  % NVIDIA paper
+
+% ── exercise environment ───────────────────────────────────────────────────────
+\newcounter{exno}[chapter]
+\renewcommand{\theexno}{\thechapter.\arabic{exno}}
+
+\newenvironment{exercise}[1][]{%
+  \refstepcounter{exno}%
+  \par\smallskip\noindent
+  \textbf{Exercise~\theexno%
+  \ifx&#1&\else\ — #1\fi.}\quad
+}{%
+  \par\smallskip
+}
+
+% ── TODO macro ─────────────────────────────────────────────────────────────────
+\newcommand{\TODO}[1][\relax]{%
+  \colorbox{yellow!40}{%
+    \textbf{TODO}%
+    \ifx#1\relax\else: #1\fi
+  }%
+}
+
+% ── paper entry macro ─────────────────────────────────────────────────────────
+% \paper{year}{title}{notes}{priority}
+\newcommand{\paper}[4]{%
+  \item[\textbullet] \textit{(#1)} \textbf{#2}%
+  \ifx&#3&\else\ — {\small #3}\fi
+  \quad #4%
+}
+
+% ── section note macro ────────────────────────────────────────────────────────
+\newcommand{\sectionnote}[1]{\par{\small\textit{#1}}\par\medskip}
+
+% ── title page ────────────────────────────────────────────────────────────────
+\title{\Huge\bfseries RL for LLMs\\[0.5ex]
+       \Large Pen-and-Paper Exercises\\[1ex]
+       \normalsize Based on the 96-paper reading list\\
+       \texttt{algoroxyolo.github.io/blog/2026/rl-reading-list/}}
+\author{}
+\date{March 2026}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+% ══════════════════════════════════════════════════════════════════════════════
+% HOW TO USE
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter*{How to Use This Book}
+Each chapter corresponds to one of the five categories in the reading list.
+Papers are listed with their year, title, brief notes, and priority label.
+Below each paper (or small cluster of papers) there is one or more \textbf{Exercise}
+slot marked \TODO{} — that is where an exercise question needs to be written.
+
+Priority labels: \pA\ deep read · \pAm\ method + experiments · \pBp\ problem + conclusion
+· \pB\ skim · \pC\ core idea only · \NV\ NVIDIA paper.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{Algorithms}
+\sectionnote{26 papers across four sub-topics.}
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Core RL: PPO $\to$ GRPO $\to$ DAPO $\to$ CISPO $\to$ MaxRL $\to$ DPPO}
+\sectionnote{13 papers.  Start with PPO, end with DPPO; each paper refines one design choice.}
+
+\begin{description}
+\paper{2017}{PPO}{Know ratio clipping + trust region}{\pB}
+\paper{2022}{InstructGPT}{RM + PPO + KL penalty; shared with \S3.1}{\pAm}
+\paper{2024}{RLOO / Revisiting REINFORCE}{}{\pAm}
+\paper{2024}{DeepSeekMath (GRPO origin)}{Start your interview story here}{\pA}
+\paper{2025}{DeepSeek-R1}{}{\pA}
+\paper{2025}{DAPO}{Recipe + system-level scaling}{\pA}
+\paper{2025}{GSPO}{}{\pAm}
+\paper{2025}{SAPO}{}{\pB}
+\paper{2025}{MiniMax-M1 / CISPO}{Changed clipping target — key interview talking point; also notable for long-context RL}{\pA}
+\paper{2025}{PPO Collapse in Long-CoT}{}{\pBp}
+\paper{2025}{Dr.\ GRPO}{Fixes length bias + std normalisation}{\pBp}
+\paper{2026}{MaxRL}{pass@k objective; RL--MLE continuum}{\pAm}
+\paper{2026}{DPPO}{TV/KL divergence trust region}{\pBp}
+\end{description}
+
+\begin{exercise}[PPO clipping]
+\TODO{Derive the PPO clipped surrogate objective; show the gradient vanishes when the ratio exceeds $(1+\epsilon)$.}
+\end{exercise}
+
+\begin{exercise}[From PPO to GRPO]
+\TODO{Describe the three algorithmic changes GRPO makes relative to PPO; for each change, state the motivation from the DeepSeekMath paper.}
+\end{exercise}
+
+\begin{exercise}[DAPO entropy bonus]
+\TODO{}
+\end{exercise}
+
+\begin{exercise}[CISPO clipping target]
+\TODO{What quantity does CISPO clip instead of the probability ratio?  Write the modified objective.}
+\end{exercise}
+
+\begin{exercise}[Dr.\ GRPO length bias]
+\TODO{}
+\end{exercise}
+
+\begin{exercise}[MaxRL objective]
+\TODO{Write the MaxRL objective in terms of pass@k; show how it recovers standard REINFORCE as a special case.}
+\end{exercise}
+
+\begin{exercise}[DPPO trust region]
+\TODO{Compare the DPPO TV/KL trust region to PPO's clipping; when is the TV constraint tighter?}
+\end{exercise}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Scaling Laws \& Meta}
+\sectionnote{5 papers.}
+
+\begin{description}
+\paper{2025}{Qwen3 Technical Report}{Thinking/non-thinking unified framework + thinking budget + distillation recipe}{\pA}
+\paper{2025}{ScaleRL / The Art of Scaling RL Compute}{}{\pA}
+\paper{2025}{Scaling Behaviors of LLM RL Post-Training}{Power-law: model scale $\times$ data $\times$ compute}{\pB}
+\paper{2025}{ProRL}{Steps scaling dimension; prerequisite to ScaleRL}{\pBp\NV}
+\paper{2025}{BroRL}{Rollouts scaling dimension; complementary to ProRL}{\pBp\NV}
+\end{description}
+
+\begin{exercise}[RL compute scaling]
+\TODO{Sketch the power-law relationship between RL compute and benchmark score described in ScaleRL; label the three axes (model scale, data, compute).}
+\end{exercise}
+
+\begin{exercise}[ProRL vs BroRL]
+\TODO{ProRL scales the \emph{steps} dimension; BroRL scales the \emph{rollouts} dimension.  Explain what each means concretely and why they are complementary.}
+\end{exercise}
+
+\begin{exercise}[Thinking budget]
+\TODO{Describe the Qwen3 thinking budget mechanism; formulate it as a constrained optimisation problem.}
+\end{exercise}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Cascade \& Stage-wise RL (Nemotron)}
+\sectionnote{4 papers.}
+
+\begin{description}
+\paper{2025}{AceReason-Nemotron 1.1}{}{\pA\NV}
+\paper{2025}{Nemotron-Cascade 1}{Foundational motivation for Cascade 2}{\pAm\NV}
+\paper{2026}{Nemotron 3 Super Technical Report}{LatentMoE + NVFP4 + multi-env simultaneous RL + reasoning budget control}{\pAm\NV}
+\paper{2026}{Nemotron-Cascade 2}{IMO/IOI/ICPC gold medals; 30B MoE; on-policy distillation}{\pA\NV}
+\end{description}
+
+\begin{exercise}[Stage-wise RL curriculum]
+\TODO{What is the motivation for stage-wise RL in Nemotron-Cascade?  List the stages and the reward signal used at each stage.}
+\end{exercise}
+
+\begin{exercise}[On-policy distillation in Cascade 2]
+\TODO{}
+\end{exercise}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Distillation (on-policy / self / context)}
+\sectionnote{4 papers.}
+
+\begin{description}
+\paper{2025}{On-Policy Distillation (Thinking Machines)}{Clearest explanation of compute tradeoffs}{\pAm}
+\paper{2026}{MiMo-V2-Flash}{Multi-teacher on-policy distillation; core Cascade 2 technique}{\pAm}
+\paper{2026}{Self-Distilled Reasoner}{Teacher = self with privileged information}{\pBp}
+\paper{2026}{On-Policy Context Distillation}{}{\pB}
+\end{description}
+
+\begin{exercise}[On-policy distillation compute tradeoff]
+\TODO{Using the notation from the Thinking Machines paper, compare the FLOPs of RL vs on-policy distillation at the same final accuracy target.}
+\end{exercise}
+
+\begin{exercise}[Multi-teacher distillation]
+\TODO{}
+\end{exercise}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{Reward Modeling}
+\sectionnote{20 papers across four sub-topics.}
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Generative Reward Models}
+\sectionnote{5 papers.}
+
+\begin{description}
+\paper{2024}{Generative Verifiers: RM as Next-Token Prediction}{GRM origin; yes/no token + majority vote; 346 citations}{\pA}
+\paper{2025}{HelpSteer3-Preference}{40k samples; NVIDIA latest; RM-Bench SOTA}{\pA\NV}
+\paper{2025}{DeepSeek-GRM / SPCT}{SPCT online RL for GRM training; 193 citations}{\pA}
+\paper{2025}{RM-R1: Reward Modeling as Reasoning}{Reason first, then score; 101 citations}{\pAm}
+\paper{2026}{P-GenRM (ICLR 2026 Oral)}{Personalized GRM — directly relevant to persona research}{\pAm}
+\end{description}
+
+\begin{exercise}[Generative verifier decoding]
+\TODO{A generative RM produces a yes/no token.  Show how majority-vote aggregation over $n$ samples gives an unbiased estimate of the true reward.}
+\end{exercise}
+
+\begin{exercise}[SPCT training loop]
+\TODO{Describe the online RL loop used to train the DeepSeek-GRM scorer (SPCT); write the reward definition.}
+\end{exercise}
+
+\begin{exercise}[RM-R1 reasoning chain]
+\TODO{}
+\end{exercise}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Process Reward Models (PRM)}
+\sectionnote{7 papers.}
+
+\begin{description}
+\paper{2024}{PAV / Rewarding Progress}{ICLR; process reward = advantage; 225 citations}{\pAm}
+\paper{2025}{Lessons of Developing PRMs}{Qwen/Tongyi; PRM training practice: what works, annotation, stability}{\pAm}
+\paper{2025}{ThinkPRM}{Long CoT verifier; 58 citations}{\pAm}
+\paper{2025}{GenPRM}{PRM test-time generative reasoning; 21 citations}{\pAm}
+\paper{2025}{ReasonFlux-PRM}{NeurIPS 2025 Spotlight; trajectory-aware step + trajectory dual supervision}{\pAm}
+\paper{2025}{R-PRM}{}{\pBp}
+\paper{2026}{PRISM}{}{\pBp}
+\end{description}
+
+\begin{exercise}[PRM vs ORM]
+\TODO{Define process reward model (PRM) and outcome reward model (ORM); give one advantage and one disadvantage of each.}
+\end{exercise}
+
+\begin{exercise}[PAV: process reward as advantage]
+\TODO{Show that the PAV reward signal is equivalent to the advantage function under certain assumptions.}
+\end{exercise}
+
+\begin{exercise}[Trajectory-aware supervision in ReasonFlux-PRM]
+\TODO{}
+\end{exercise}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Rubrics-as-Rewards}
+\sectionnote{4 papers.}
+
+\begin{description}
+\paper{2025}{Rubrics as Rewards (RaR)}{Rubrics structure subjective preferences; 111 citations}{\pAm}
+\paper{2025}{OpenRubrics}{}{\pBp}
+\paper{2026}{Rubric-ARM}{Alternating optimisation of rubric generator + judge}{\pBp}
+\paper{2026}{Golden Goose}{Non-verifiable $\to$ verifiable bridge; high value for research narrative}{\pAm\NV}
+\end{description}
+
+\begin{exercise}[Rubric design]
+\TODO{Design a three-criteria rubric for evaluating a creative writing response; explain how each criterion maps to a numerical reward.}
+\end{exercise}
+
+\begin{exercise}[Rubric-ARM alternating optimisation]
+\TODO{Write the two optimisation steps in Rubric-ARM; identify which parameters are frozen in each step.}
+\end{exercise}
+
+\begin{exercise}[Golden Goose verifiability bridge]
+\TODO{}
+\end{exercise}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{RM Evaluation \& Benchmarks}
+\sectionnote{4 papers.}
+
+\begin{description}
+\paper{2024}{How to Evaluate RM for RLHF / PPE}{Offline-online gap; 61 citations}{\pAm}
+\paper{2024}{HelpSteer3 dataset}{Feedback + edit; inference-time scaling}{\pBp\NV}
+\paper{2025}{RewardBench 2}{Reward hacking; 63 citations}{\pBp}
+\paper{2026}{Long-form RewardBench}{}{\pB}
+\end{description}
+
+\begin{exercise}[Offline-online reward model gap]
+\TODO{Explain why a reward model that scores high on an offline benchmark can fail in the online RL loop; propose one mitigation.}
+\end{exercise}
+
+\begin{exercise}[Reward hacking in RewardBench 2]
+\TODO{}
+\end{exercise}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{RLHF \& Preference Optimisation}
+\sectionnote{13 papers across three sub-topics.}
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Foundations}
+\sectionnote{3 papers.}
+
+\begin{description}
+\paper{2022}{InstructGPT}{Shared with \S1.1}{\pAm}
+\paper{2022}{Bai et al.\ / HH-RLHF}{Safety alignment; HH-RLHF dataset}{\pBp}
+\paper{2023}{DPO}{Know why it eventually fell short}{\pAm}
+\end{description}
+
+\begin{exercise}[RLHF three-phase pipeline]
+\TODO{Describe the three phases of InstructGPT training (SFT, RM, RL); state the loss function used in each phase.}
+\end{exercise}
+
+\begin{exercise}[DPO derivation]
+\TODO{Derive the DPO objective from the RLHF objective by solving the constrained optimisation problem analytically.}
+\end{exercise}
+
+\begin{exercise}[DPO limitations]
+\TODO{List two failure modes of offline DPO that motivate online methods.}
+\end{exercise}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{From Simplification to Online RL}
+\sectionnote{4 papers.}
+
+\begin{description}
+\paper{2024}{SimPO}{DPO simplification endpoint}{\pB}
+\paper{2024}{Online Iterative RLHF}{Turning point: online $\gg$ offline DPO}{\pAm}
+\paper{2025}{Asynchronous RLHF (ICLR 2025)}{}{\pBp}
+\paper{2025}{OLMo 3 (SFT-DPO-RL-RL Zero)}{Fully transparent \& reproducible; all data/code/checkpoints}{\pA}
+\end{description}
+
+\begin{exercise}[SimPO reference-free objective]
+\TODO{Write the SimPO loss; identify the term that replaces the reference model log-probability in DPO.}
+\end{exercise}
+
+\begin{exercise}[Online vs offline preference learning]
+\TODO{Sketch the data distribution shift argument that explains why online RLHF outperforms offline DPO.}
+\end{exercise}
+
+\begin{exercise}[OLMo 3 training stages]
+\TODO{}
+\end{exercise}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Multi-turn / Social / Creative RLHF}
+\sectionnote{6 papers.}
+
+\begin{description}
+\paper{2025}{PPP: Proactive and Personalized Agents}{Three-objective RL; UserVille benchmark}{\pAm}
+\paper{2025}{RL from User Conversations}{Persona-conditioned rewards}{\pAm}
+\paper{2025}{RLMR: Mixed Rewards for Creative Writing}{Subjective aesthetic RM + objective constraint verifier}{\pB}
+\paper{2026}{HER: RL for Role-playing}{Dual-layer thinking; relevant to InCharacter work}{\pAm}
+\paper{2026}{OMAR (One Model All Roles)}{}{\pB}
+\paper{2026}{Social-R1}{}{\pB}
+\end{description}
+
+\begin{exercise}[Multi-objective RL for personalisation]
+\TODO{PPP optimises three objectives simultaneously.  Write the scalarised reward; discuss the choice of weights.}
+\end{exercise}
+
+\begin{exercise}[Persona-conditioned rewards]
+\TODO{}
+\end{exercise}
+
+\begin{exercise}[Mixed rewards for creative writing]
+\TODO{RLMR combines a subjective aesthetic RM with an objective constraint verifier.  Propose a concrete weighting scheme and justify it.}
+\end{exercise}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{Systems}
+\sectionnote{17 papers across three sub-topics.}
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Sync vs Async Training}
+\sectionnote{6 papers.}
+
+\begin{description}
+\paper{2025}{Magistral}{}{\pA}
+\paper{2025}{AReaL}{}{\pAm}
+\paper{2025}{slime (SGLang RL blog)}{}{\pAm}
+\paper{2025}{A-3PO}{Decoupled PPO; independent dimension}{\pBp}
+\paper{2026}{StaleFlow}{}{\pBp}
+\paper{2026}{GAC}{}{\pBp}
+\end{description}
+
+\begin{exercise}[Synchronous vs asynchronous rollout]
+\TODO{Draw a timeline diagram for synchronous and asynchronous rollout collection; label the idle time in each.}
+\end{exercise}
+
+\begin{exercise}[A-3PO decoupled PPO]
+\TODO{Explain the decoupling in A-3PO; identify which components run on separate hardware and why.}
+\end{exercise}
+
+\begin{exercise}[Staleness in async RL]
+\TODO{}
+\end{exercise}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Train-Inference Mismatch \& RL Stability}
+\sectionnote{9 papers.}
+
+\begin{description}
+\paper{2025}{Stabilizing RL with LLMs}{IS correction + Routing Replay theory}{\pAm}
+\paper{2025}{Give Me FP32 or Give Me Death}{}{\pAm}
+\paper{2025}{Defeating Nondeterminism (Thinking Machines)}{}{\pAm}
+\paper{2025}{SGLang Deterministic Inference}{}{\pAm}
+\paper{2025}{R3: MoE Routing Replay}{Theoretically explained by Stabilizing RL paper}{\pBp}
+\paper{2025}{FP16 Mismatch}{Train/infer path consistency matters more than precision per se}{\pBp}
+\paper{2025}{TP Sizes Determinism}{}{\pAm}
+\paper{2025}{Unified FP8 (SGLang blog)}{}{\pAm}
+\paper{2025}{DeepSeek-V3.2}{}{\pB}
+\end{description}
+
+\begin{exercise}[Importance sampling correction]
+\TODO{Write the importance-sampling corrected policy gradient for the case where rollouts are collected with a policy $\pi_{\text{old}}$ but updated with $\pi_\theta$.}
+\end{exercise}
+
+\begin{exercise}[Numerical precision and reward variance]
+\TODO{Explain why switching from FP32 to FP16 during inference can introduce instability in the RL training signal.}
+\end{exercise}
+
+\begin{exercise}[MoE routing replay]
+\TODO{What is the routing replay trick in R3?  Why does it reduce train-inference mismatch?}
+\end{exercise}
+
+\begin{exercise}[Sources of nondeterminism]
+\TODO{List four sources of nondeterminism in a distributed LLM training run; for each, state a mitigation.}
+\end{exercise}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Long-Context RL}
+\sectionnote{2 papers.}
+
+\begin{description}
+\paper{2025}{Context-Folding}{Long-horizon agent context compression/folding management}{\pBp}
+\paper{2025}{QwenLong-L1.5}{}{\pB}
+\end{description}
+
+\begin{exercise}[Context compression for long-horizon agents]
+\TODO{Describe the context-folding mechanism; formulate the compression problem as a maximum-coverage sub-sequence selection.}
+\end{exercise}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\chapter{Tasks \& Agents}
+\sectionnote{21 papers across six sub-topics.}
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Coding Agents}
+\sectionnote{2 papers.}
+
+\begin{description}
+\paper{2026}{Qwen3-Coder-Next}{}{\pAm}
+\paper{2026}{SWE-Master}{}{\pBp}
+\end{description}
+
+\begin{exercise}[Coding agent reward design]
+\TODO{Propose a reward function for a coding agent that passes unit tests; discuss how to handle partial credit.}
+\end{exercise}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Deep Research \& Search Agents}
+\sectionnote{4 papers.}
+
+\begin{description}
+\paper{2025}{Search-R1}{790 citations}{\pA}
+\paper{2025}{Tongyi DeepResearch}{}{\pAm}
+\paper{2026}{Yunque DeepResearch}{}{\pBp}
+\paper{2026}{How to Train DR Agent}{}{\pBp}
+\end{description}
+
+\begin{exercise}[Search-R1 reward signal]
+\TODO{Describe the reward signal used to train Search-R1; compare it to the reward used for pure-reasoning (no search) GRPO.}
+\end{exercise}
+
+\begin{exercise}[Deep research evaluation]
+\TODO{}
+\end{exercise}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Computer-Use \& GUI Agents}
+\sectionnote{3 papers.}
+
+\begin{description}
+\paper{2026}{OmegaUse}{}{\pBp}
+\paper{2026}{GUI-Libra}{}{\pBp}
+\paper{2025}{ComputerRL}{}{\pBp}
+\end{description}
+
+\begin{exercise}[GUI agent state-action space]
+\TODO{Define the state space, action space, and a terminal condition for a GUI agent trained with RL on a web browser.}
+\end{exercise}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Tool-Use RL}
+\sectionnote{3 papers.}
+
+\begin{description}
+\paper{2025}{ToolRL}{Reward design textbook; 191 citations}{\pA}
+\paper{2025}{Nemotron-Tool-N1}{Binary reward; must-discuss in interviews}{\pA\NV}
+\paper{2025}{ReTool}{Cold-start synthesis + outcome RL; 231 citations}{\pAm}
+\end{description}
+
+\begin{exercise}[Tool-use reward design]
+\TODO{ToolRL uses a structured reward for tool calls.  Write out the reward components; discuss how each discourages reward hacking.}
+\end{exercise}
+
+\begin{exercise}[Cold-start synthesis in ReTool]
+\TODO{Why does ReTool use a cold-start synthesis phase before RL?  What distribution shift problem does it solve?}
+\end{exercise}
+
+\begin{exercise}[Binary vs dense reward]
+\TODO{Compare the binary reward in Nemotron-Tool-N1 with a dense shaped reward; give one advantage and one disadvantage of each.}
+\end{exercise}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Generalist Agent RL Frameworks}
+\sectionnote{5 papers.}
+
+\begin{description}
+\paper{2026}{RLAnything}{Joint optimisation of env + policy + RM}{\pAm}
+\paper{2025}{AGENTRL}{Async + cross-policy sampling}{\pAm}
+\paper{2025}{Kimi K2.5 Agent Swarm}{Multi-agent orchestration for agentic tasks}{\pBp}
+\paper{2025}{WebAgent-R1}{End-to-end web-agent RL; 73 citations}{\pBp}
+\paper{2026}{ProRL Agent}{NVIDIA; rollout-as-a-service for multi-turn agent RL}{\pBp\NV}
+\end{description}
+
+\begin{exercise}[Joint optimisation in RLAnything]
+\TODO{RLAnything jointly optimises environment, policy, and reward model.  Write the tri-level optimisation objective and identify which level is innermost.}
+\end{exercise}
+
+\begin{exercise}[Cross-policy sampling]
+\TODO{}
+\end{exercise}
+
+\begin{exercise}[Rollout-as-a-service]
+\TODO{Describe the rollout-as-a-service abstraction in ProRL Agent; explain how it decouples the policy server from the environment server.}
+\end{exercise}
+
+% ──────────────────────────────────────────────────────────────────────────────
+\section{Agent RL Challenges \& Self-Evolution}
+\sectionnote{4 papers.}
+
+\begin{description}
+\paper{2025}{RAGEN}{Echo Trap — why agent RL fails; 148 citations}{\pA}
+\paper{2026}{iStar (ICLR 2026)}{Implicit PRM for credit assignment}{\pAm}
+\paper{2025}{AgentPRM}{MC rollout actor-critic; 29 citations}{\pBp}
+\paper{2025}{Absolute Zero}{Zero-data self-play; 161 citations}{\pAm}
+\end{description}
+
+\begin{exercise}[Echo Trap]
+\TODO{Define the Echo Trap from RAGEN; explain why it arises specifically in agentic (multi-turn) settings but not in single-turn RL.}
+\end{exercise}
+
+\begin{exercise}[Implicit PRM for credit assignment]
+\TODO{How does iStar assign per-step credit without explicit step-level annotations?  Sketch the MC estimate used.}
+\end{exercise}
+
+\begin{exercise}[Absolute Zero self-play data generation]
+\TODO{Describe how Absolute Zero generates its own training data without any human-labelled examples.}
+\end{exercise}
+
+\end{document}
